@@ -1,0 +1,172 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import SearchModal from '../components/SearchModal.astro';
+import { SITE_NAME, SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<BaseHead 
+			title={`关于我们与实测声明 | ${SITE_TITLE}`} 
+			description="了解机场搜 (Jichangs.org) 的测试理念、硬件测试环境、客观中立原则及相关法律免责声明。" 
+		/>
+	</head>
+	<body>
+		<Header />
+
+		<main class="about-main">
+			<div class="container prose-container">
+				<nav class="breadcrumbs">
+					<a href="/">首页</a>
+					<span class="sep">/</span>
+					<span class="current">关于本站</span>
+				</nav>
+
+				<header class="about-header">
+					<span class="badge badge-brand">ABOUT JICHANGS.ORG</span>
+					<h1 class="page-title">关于机场搜 (Jichangs.org)</h1>
+					<p class="page-lead">
+						专注于为海外科研、外贸出海、技术开发及极客玩家提供真实、中立、不掺水分的科学上网节点实测与配置指南。
+					</p>
+				</header>
+
+				<div class="about-content glass-panel">
+					<h2>一、我们的创立初衷</h2>
+					<p>
+						在过去的几年里，网络上充斥着大量虚假、劣质且诱导年付的机场测评博主。许多刚接触外贸业务、ChatGPT 学习或学术论文查阅的新手，因为轻信了“1元机场”、“500G 年付 30 元”的虚标噱头，充值没过一个月便遭遇服务商失联跑路，不仅资金受损，更耽误了核心业务。
+					</p>
+					<p>
+						<strong>Jichangs.org（机场搜）</strong> 诞生于对真实网络数据的执着追求。我们希望建立一个透明、客观的测评基准，用真实的数据揭开专线、中继与直连的本质差别，让每一位合法用网者都能选到稳定、安心的高速节点。
+					</p>
+
+					<hr />
+
+					<h2>二、实验室硬件与实测环境</h2>
+					<p>为了保证测试数据的真实性与复现性，我们所有的测速与稳定性监测均运行在真实家庭与机房双宽带环境下：</p>
+					<ul>
+						<li><strong>测试主宽带</strong>：上海电信 FTTH 千兆光纤（下行 1000 Mbps / 上行 100 Mbps）</li>
+						<li><strong>测试辅宽带</strong>：广州联通 FTTH 千兆光纤（下行 1000 Mbps / 上行 60 Mbps）</li>
+						<li><strong>测试硬件设备</strong>：定制 x86 软路由（Intel i5-1235U + 2.5G 双网口）搭配 Apple Mac Studio (M2 Max) 与 Windows 11 PC</li>
+						<li><strong>核心测试时段</strong>：每晚 <strong>20:00 - 23:00</strong>（全网国际出口高峰期压测）</li>
+						<li><strong>软件探针</strong>：Speedtest CLI、4K/8K YouTube 持续码率监测探针、原生住宅 IP 纯净度检测脚本</li>
+					</ul>
+
+					<hr />
+
+					<h2>三、中立与客观性承诺</h2>
+					<ol>
+						<li><strong>杜绝充值洗白</strong>：任何发生过恶意跑路、倒卖用户数据、虚标直连冒充专线的服务商，一经核实将永久列入黑名单，绝不接受赞助修改实测结果。</li>
+						<li><strong>全自费实测购买</strong>：测评榜单中的所有主力服务套餐，均由测试团队自行注册充值体验，确保与普通付费用户享有完全相同的节点通道与服务质量。</li>
+						<li><strong>坚持建议月付</strong>：我们始终向所有读者强调“坚持月付体验”与“主备双机场防断联”的核心原则。</li>
+					</ol>
+
+					<hr />
+
+					<h2 id="disclaimer">四、重要法律免责与合规声明</h2>
+					<div class="callout callout-warning">
+						<p>
+							<strong>严正声明：</strong><br />
+							1. 本站（Jichangs.org / 机场搜）发表的所有文章、评测数据及软件配置说明，仅供跨国科研、外贸电商出海、IT 技术交流及学术研究所需的合法跨境加速探讨。<br />
+							2. 请所有访问者自觉遵守中华人民共和国宪法、网络安全法及各项法律法规，<strong>坚决严禁利用任何代理工具从事危害国家安全、传播违法信息、赌博或网络犯罪活动</strong>。<br />
+							3. 本站不提供任何代理节点服务器出租或节点分发服务，所有评测内容均基于公开公开互联网资讯整理，读者依据本站资讯进行的一切行为责任自负。
+						</p>
+					</div>
+				</div>
+			</div>
+		</main>
+
+		<Footer />
+		<SearchModal />
+
+		<style>
+			.about-main {
+				padding: 3rem 0 6rem;
+			}
+
+			.breadcrumbs {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				font-size: 0.85rem;
+				color: var(--text-muted);
+				margin-bottom: 1.5rem;
+			}
+
+			.breadcrumbs a {
+				color: var(--text-muted);
+			}
+
+			.breadcrumbs a:hover {
+				color: var(--accent-light);
+			}
+
+			.breadcrumbs .current {
+				color: var(--text-secondary);
+			}
+
+			.about-header {
+				margin-bottom: 2.5rem;
+				display: flex;
+				flex-direction: column;
+				gap: 1rem;
+			}
+
+			.page-title {
+				font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+				font-weight: 900;
+				margin: 0;
+			}
+
+			.page-lead {
+				font-size: 1.15rem;
+				color: var(--text-secondary);
+				line-height: 1.75;
+				margin: 0;
+			}
+
+			.about-content {
+				padding: 2.5rem;
+				border: 1px solid var(--border-subtle);
+				line-height: 1.85;
+				font-size: 1.05rem;
+				color: var(--text-secondary);
+			}
+
+			.about-content h2 {
+				margin-top: 2rem;
+				margin-bottom: 1rem;
+				font-size: 1.4rem;
+				color: var(--text-primary);
+				font-weight: 800;
+			}
+
+			.about-content h2:first-of-type {
+				margin-top: 0;
+			}
+
+			.about-content hr {
+				margin: 2.5rem 0;
+				border: none;
+				border-top: 1px solid var(--border-subtle);
+			}
+
+			.about-content ul, .about-content ol {
+				padding-left: 1.5rem;
+				margin-bottom: 1.5rem;
+			}
+
+			.about-content li {
+				margin-bottom: 0.6rem;
+			}
+
+			@media (max-width: 640px) {
+				.about-content {
+					padding: 1.5rem;
+				}
+			}
+		</style>
+	</body>
+</html>

@@ -1,0 +1,13 @@
+# Robots.txt for Jichangs.org (机场搜)
+User-agent: *
+Allow: /
+Disallow: /go/
+
+# Bingbot Specific Rules
+User-agent: Bingbot
+Allow: /
+Disallow: /go/
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://jichangs.org/sitemap-index.xml

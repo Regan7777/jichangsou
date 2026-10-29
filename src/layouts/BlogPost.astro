@@ -1,0 +1,476 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import Header from '../components/Header.astro';
+import SearchModal from '../components/SearchModal.astro';
+import { SITE_NAME, TOP_AIRPORTS } from '../consts';
+
+type Props = CollectionEntry<'blog'>['data'];
+
+const { title, description, pubDate, updatedDate, category, tags = [], rating, speed, price, badge, author } = Astro.props;
+
+const currentSlug = Astro.url.pathname.replace(/^\/blog\//, '').replace(/\/$/, '');
+const matchedAirport = TOP_AIRPORTS.find(a => a.reviewSlug === currentSlug || a.id === currentSlug || tags.includes(a.name));
+---
+
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<BaseHead title={`${title} | ${SITE_NAME}`} description={description} keywords={tags.join(', ')} />
+
+		<!-- Schema.org Article & Breadcrumbs for Bingbot & Google -->
+		<script type="application/ld+json" is:inline set:html={JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "Article",
+			"headline": title,
+			"description": description,
+			"datePublished": pubDate.toISOString(),
+			"dateModified": (updatedDate || pubDate).toISOString(),
+			"author": {
+				"@type": "Organization",
+				"name": author || "机场搜评测组",
+				"url": "https://jichangs.org/about"
+			},
+			"publisher": {
+				"@type": "Organization",
+				"name": "机场搜",
+				"logo": {
+					"@type": "ImageObject",
+					"url": "https://jichangs.org/favicon.svg"
+				}
+			},
+			"mainEntityOfPage": {
+				"@type": "WebPage",
+				"@id": Astro.url.toString()
+			}
+		})} />
+		<script type="application/ld+json" is:inline set:html={JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "BreadcrumbList",
+			"itemListElement": [
+				{
+					"@type": "ListItem",
+					"position": 1,
+					"name": "首页",
+					"item": "https://jichangs.org/"
+				},
+				{
+					"@type": "ListItem",
+					"position": 2,
+					"name": "评测文章",
+					"item": "https://jichangs.org/blog"
+				},
+				{
+					"@type": "ListItem",
+					"position": 3,
+					"name": title,
+					"item": Astro.url.toString()
+				}
+			]
+		})} />
+	</head>
+
+	<body>
+		<!-- Reading Progress Bar -->
+		<div class="reading-progress-bar" id="progressBar"></div>
+
+		<Header />
+
+		<main class="post-main">
+			<article class="prose-container">
+				<!-- Breadcrumbs -->
+				<nav class="breadcrumbs" aria-label="面包屑导航">
+					<a href="/">首页</a>
+					<span class="sep">/</span>
+					<a href="/blog">评测文章</a>
+					<span class="sep">/</span>
+					<span class="current">{category || '正文'}</span>
+				</nav>
+
+				<!-- Article Header -->
+				<header class="article-header">
+					<div class="meta-top">
+						<span class="badge badge-brand">{category || '深度评测'}</span>
+						{badge && <span class="badge badge-amber">{badge}</span>}
+						<div class="date-info">
+							<span>发布于</span>
+							<FormattedDate date={pubDate} />
+							{updatedDate && (
+								<span class="updated-hint">
+									(最近更新: <FormattedDate date={updatedDate} />)
+								</span>
+							)}
+						</div>
+					</div>
+
+					<h1 class="article-title">{title}</h1>
+
+					<p class="article-lead">{description}</p>
+
+					<!-- Author and Quick Tags -->
+					<div class="author-tags-bar">
+						<div class="author-info">
+							<div class="author-avatar">JC</div>
+							<div>
+								<div class="author-name">{author || '机场搜实测组'}</div>
+								<div class="author-sub">独立客观 · 真实测速</div>
+							</div>
+						</div>
+
+						<div class="tags-wrapper">
+							{tags.map((tag: string) => (
+								<span class="article-tag">#{tag}</span>
+							))}
+						</div>
+					</div>
+
+					<!-- Key Evaluation Highlights Scorecard (If has rating/speed) -->
+					{(rating || speed || price) && (
+						<div class="scorecard-panel glass-panel">
+							<div class="scorecard-title">
+								<span>核心评测指标速览</span>
+							</div>
+							<div class="scorecard-grid">
+								{rating && (
+									<div class="scorecard-item">
+										<span class="scorecard-label">综合推荐评分</span>
+										<div class="scorecard-val score-high">
+											<span>{rating}</span>
+											<span class="score-denom">/10</span>
+										</div>
+									</div>
+								)}
+								{speed && (
+									<div class="scorecard-item">
+										<span class="scorecard-label">晚高峰实测下行</span>
+										<div class="scorecard-val speed-high">{speed}</div>
+									</div>
+								)}
+								{price && (
+									<div class="scorecard-item">
+										<span class="scorecard-label">起步参考价</span>
+										<div class="scorecard-val price-high">{price}</div>
+									</div>
+								)}
+							</div>
+							{matchedAirport && (
+								<div class="scorecard-actions-bar">
+									<div class="scorecard-promo-left">
+										<a 
+											href={`/go/${matchedAirport.id}`} 
+											target="_blank" 
+											rel="noopener noreferrer nofollow sponsored" 
+											class="btn btn-primary btn-sm"
+										>
+											前往 {matchedAirport.name} 官网 ➔
+										</a>
+									</div>
+									{matchedAirport.promoCode && (
+										<div class="scorecard-promo-right">
+											<span>专属优惠码: </span>
+											<strong>{matchedAirport.promoCode}</strong>
+											<span class="promo-badge">({matchedAirport.discount})</span>
+										</div>
+									)}
+								</div>
+							)}
+						</div>
+					)}
+				</header>
+
+				<!-- Article Body Markdown Content -->
+				<div class="prose">
+					<slot />
+				</div>
+
+				<!-- Article Bottom CTA -->
+				<div class="article-footer glass-panel">
+					<div class="footer-cta-text">
+						<h3>还没有找到心仪的高速节点？</h3>
+						<p>查看最新更新的 2026 优质机场天梯榜，包含晚高峰测速横评与专属折扣优惠码。</p>
+					</div>
+					<div class="footer-cta-btn">
+						<a href="/ranking" class="btn btn-primary">查看 2026 天梯排行榜 ➔</a>
+					</div>
+				</div>
+
+				<!-- Back to Blog Navigation -->
+				<div class="back-nav">
+					<a href="/blog" class="back-link">
+						← 返回全部评测与文章列表
+					</a>
+				</div>
+			</article>
+		</main>
+
+		<Footer />
+		<SearchModal />
+
+		<style>
+			.reading-progress-bar {
+				position: fixed;
+				top: 0;
+				left: 0;
+				height: 3px;
+				background: #3b82f6;
+				width: 0%;
+				z-index: 99999;
+				transition: width 0.1s ease;
+			}
+
+			.post-main {
+				padding: 2.5rem 1rem 5rem;
+				width: 100%;
+			}
+
+			.breadcrumbs {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				font-size: 0.85rem;
+				color: var(--text-muted);
+				margin-bottom: 1.5rem;
+			}
+
+			.breadcrumbs a {
+				color: var(--text-muted);
+			}
+
+			.breadcrumbs a:hover {
+				color: var(--accent-light);
+			}
+
+			.breadcrumbs .current {
+				color: var(--text-secondary);
+			}
+
+			.article-header {
+				margin-bottom: 3rem;
+				padding-bottom: 2rem;
+				border-bottom: 1px solid var(--border-subtle);
+			}
+
+			.meta-top {
+				display: flex;
+				align-items: center;
+				flex-wrap: wrap;
+				gap: 0.75rem;
+				margin-bottom: 1rem;
+				font-size: 0.85rem;
+				color: var(--text-muted);
+			}
+
+			.article-title {
+				font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+				font-weight: 900;
+				line-height: 1.3;
+				margin-bottom: 1.25rem;
+				color: var(--text-primary);
+			}
+
+			.article-lead {
+				font-size: 1.15rem;
+				line-height: 1.75;
+				color: var(--text-secondary);
+				margin-bottom: 1.5rem;
+			}
+
+			.author-tags-bar {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 1.5rem;
+				flex-wrap: wrap;
+				padding: 1rem 0;
+			}
+
+			.author-info {
+				display: flex;
+				align-items: center;
+				gap: 0.75rem;
+			}
+
+			.author-avatar {
+				width: 38px;
+				height: 38px;
+				background: #2563eb;
+				color: #fff;
+				border: 1px solid #3b82f6;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-weight: 800;
+				font-size: 0.95rem;
+			}
+
+			.author-name {
+				font-weight: 700;
+				font-size: 0.95rem;
+				color: var(--text-primary);
+			}
+
+			.author-sub {
+				font-size: 0.75rem;
+				color: var(--text-muted);
+			}
+
+			.tags-wrapper {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.4rem;
+			}
+
+			.article-tag {
+				font-size: 0.8rem;
+				color: #60a5fa;
+				background: rgba(37, 99, 235, 0.12);
+				padding: 0.25rem 0.6rem;
+				border: 1px solid rgba(59, 130, 246, 0.25);
+				font-weight: 600;
+			}
+
+			/* Scorecard */
+			.scorecard-panel {
+				margin-top: 1.5rem;
+				padding: 1.25rem 1.75rem;
+				background: rgba(37, 99, 235, 0.08);
+				border: 1px solid rgba(59, 130, 246, 0.35);
+			}
+
+			.scorecard-title {
+				font-weight: 700;
+				font-size: 0.95rem;
+				color: var(--text-primary);
+				margin-bottom: 1rem;
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+			}
+
+			.scorecard-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+				gap: 1.25rem;
+			}
+
+			.scorecard-item {
+				display: flex;
+				flex-direction: column;
+				gap: 0.25rem;
+			}
+
+			.scorecard-label {
+				font-size: 0.78rem;
+				color: var(--text-muted);
+				font-weight: 600;
+				text-transform: uppercase;
+			}
+
+			.scorecard-val {
+				font-size: 1.35rem;
+				font-weight: 900;
+			}
+
+			.score-high {
+				color: #34d399;
+			}
+
+			.score-denom {
+				font-size: 0.85rem;
+				color: var(--text-muted);
+			}
+
+			.speed-high {
+				color: #38bdf8;
+			}
+
+			.price-high {
+				color: #fbbf24;
+			}
+
+			.scorecard-actions-bar {
+				margin-top: 1.25rem;
+				padding-top: 1.25rem;
+				border-top: 1px solid rgba(59, 130, 246, 0.2);
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				flex-wrap: wrap;
+				gap: 1rem;
+			}
+
+			.scorecard-promo-right {
+				font-size: 0.875rem;
+				color: var(--text-secondary);
+				display: flex;
+				align-items: center;
+				gap: 0.4rem;
+				flex-wrap: wrap;
+			}
+
+			.scorecard-promo-right strong {
+				color: #38bdf8;
+				background: rgba(56, 189, 248, 0.12);
+				padding: 0.15rem 0.5rem;
+				border: 1px solid rgba(56, 189, 248, 0.3);
+				letter-spacing: 0.05em;
+			}
+
+			.promo-badge {
+				color: var(--text-muted);
+				font-size: 0.8125rem;
+			}
+
+			.article-footer {
+				margin-top: 4rem;
+				padding: 2.2rem;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 1.5rem;
+				flex-wrap: wrap;
+				border: 1px solid var(--border-subtle);
+			}
+
+			.footer-cta-text h3 {
+				margin: 0 0 0.5rem;
+				font-size: 1.25rem;
+			}
+
+			.footer-cta-text p {
+				margin: 0;
+				font-size: 0.95rem;
+				color: var(--text-secondary);
+			}
+
+			.back-nav {
+				margin-top: 2rem;
+			}
+
+			.back-link {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.5rem;
+				font-weight: 600;
+				color: var(--text-secondary);
+			}
+
+			.back-link:hover {
+				color: var(--accent-light);
+			}
+		</style>
+
+		<script>
+			window.addEventListener('scroll', () => {
+				const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+				const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+				const scrolled = (winScroll / height) * 100;
+				const bar = document.getElementById('progressBar');
+				if (bar) {
+					bar.style.width = scrolled + '%';
+				}
+			});
+		</script>
+	</body>
+</html>

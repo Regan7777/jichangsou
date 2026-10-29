@@ -1,0 +1,307 @@
+---
+import { TOP_AIRPORTS } from '../consts';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog');
+const searchIndex = [
+  ...TOP_AIRPORTS.map(a => ({
+    title: a.name + ' - ' + a.tagline,
+    type: '精选机场',
+    url: a.reviewSlug ? `/blog/${a.reviewSlug}` : `/ranking#${a.id}`,
+    desc: `${a.type} | 晚高峰 ${a.peakSpeed} | 价格 ${a.startingPrice} | 优惠码: ${a.promoCode}`,
+    tags: [a.type, a.category, ...a.streamingUnlock]
+  })),
+  ...posts.map(p => ({
+    title: p.data.title,
+    type: p.data.category || '评测文章',
+    url: `/blog/${p.id}/`,
+    desc: p.data.description,
+    tags: p.data.tags || []
+  }))
+];
+---
+
+<div class="search-modal-backdrop" id="searchModal" aria-hidden="true">
+  <div class="search-modal-container glass-panel">
+    <div class="search-modal-header">
+      <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="21" y1="21" x2="16" y2="16"></line>
+      </svg>
+      <input 
+        type="search" 
+        id="modalSearchInput" 
+        placeholder="搜索机场名称、IEPL专线、流媒体解锁、客户端配置..." 
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button class="search-close-btn" id="closeSearchBtn" aria-label="关闭搜索">
+        <kbd>ESC</kbd>
+      </button>
+    </div>
+
+    <div class="search-modal-body">
+      <div class="search-results-list" id="searchResultsList">
+        <div class="search-placeholder">
+          <p>输入关键词检索全站文章与节点，支持：<code>IEPL</code>、<code>Netflix</code>、<code>Clash</code>、<code>按量</code></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="search-modal-footer">
+      <span><kbd>↑</kbd> <kbd>↓</kbd> 切换导航</span>
+      <span><kbd>↵</kbd> 打开选定页面</span>
+      <span><kbd>ESC</kbd> 退出搜索</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .search-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(6px);
+    z-index: 9999;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 10vh;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .search-modal-backdrop.is-active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .search-modal-container {
+    width: 100%;
+    max-width: 640px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-highlight);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .search-modal-header {
+    display: flex;
+    align-items: center;
+    padding: 1.1rem 1.4rem;
+    border-bottom: 1px solid var(--border-subtle);
+    gap: 0.85rem;
+    background: var(--bg-card);
+  }
+
+  .search-icon {
+    color: #38bdf8;
+    flex-shrink: 0;
+  }
+
+  #modalSearchInput {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+
+  #modalSearchInput::placeholder {
+    color: var(--text-muted);
+  }
+
+  .search-close-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .search-close-btn kbd, .search-modal-footer kbd {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-strong);
+    padding: 0.2rem 0.45rem;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  .search-modal-body {
+    max-height: 420px;
+    overflow-y: auto;
+    padding: 0.75rem;
+  }
+
+  .search-placeholder {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+  }
+
+  .search-placeholder code {
+    background: rgba(37, 99, 235, 0.2);
+    color: #93c5fd;
+    padding: 0.2rem 0.45rem;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+
+  :global(.search-item) {
+    display: flex;
+    flex-direction: column;
+    padding: 0.9rem 1.1rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+    margin-bottom: 0.35rem;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  :global(.search-item:hover), :global(.search-item.is-selected) {
+    background: rgba(37, 99, 235, 0.15);
+    border-color: #3b82f6;
+  }
+
+  :global(.search-item-top) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+  }
+
+  :global(.search-item-title) {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-primary);
+  }
+
+  :global(.search-item-type) {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.5rem;
+    background: rgba(37, 99, 235, 0.25);
+    color: #93c5fd;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    font-weight: 700;
+  }
+
+  :global(.search-item-desc) {
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .search-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1.25rem;
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: var(--bg-secondary);
+  }
+</style>
+
+<script define:vars={{ searchIndex }}>
+  const modal = document.getElementById('searchModal');
+  const openBtn = document.getElementById('openSearchBtn');
+  const closeBtn = document.getElementById('closeSearchBtn');
+  const searchInput = document.getElementById('modalSearchInput');
+  const resultsContainer = document.getElementById('searchResultsList');
+
+  function openSearch() {
+    if (!modal) return;
+    modal.classList.add('is-active');
+    setTimeout(() => searchInput?.focus(), 50);
+  }
+
+  function closeSearch() {
+    if (!modal) return;
+    modal.classList.remove('is-active');
+    if (searchInput) searchInput.value = '';
+    renderDefaultPlaceholder();
+  }
+
+  function renderDefaultPlaceholder() {
+    if (!resultsContainer) return;
+    resultsContainer.innerHTML = `
+      <div class="search-placeholder">
+        <p>输入关键词检索全站文章与节点，支持：<code>IEPL</code>、<code>Netflix</code>、<code>Clash</code>、<code>按量</code></p>
+      </div>
+    `;
+  }
+
+  function performSearch(query) {
+    const q = query.trim().toLowerCase();
+    if (!q) {
+      renderDefaultPlaceholder();
+      return;
+    }
+
+    const matched = searchIndex.filter(item => {
+      const inTitle = item.title.toLowerCase().includes(q);
+      const inDesc = item.desc.toLowerCase().includes(q);
+      const inTags = item.tags.some(t => t.toLowerCase().includes(q));
+      return inTitle || inDesc || inTags;
+    });
+
+    if (matched.length === 0) {
+      resultsContainer.innerHTML = `
+        <div class="search-placeholder">
+          <p>未找到与 "<strong>${query}</strong>" 相关的结果</p>
+          <p style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--text-muted);">建议尝试：专线、低延迟、ChatGPT、客户端</p>
+        </div>
+      `;
+      return;
+    }
+
+    resultsContainer.innerHTML = matched.map((item, idx) => `
+      <a href="${item.url}" class="search-item ${idx === 0 ? 'is-selected' : ''}">
+        <div class="search-item-top">
+          <span class="search-item-title">${item.title}</span>
+          <span class="search-item-type">${item.type}</span>
+        </div>
+        <div class="search-item-desc">${item.desc}</div>
+      </a>
+    `).join('');
+  }
+
+  openBtn?.addEventListener('click', openSearch);
+  closeBtn?.addEventListener('click', closeSearch);
+
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeSearch();
+  });
+
+  searchInput?.addEventListener('input', (e) => {
+    performSearch(e.target.value);
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      if (modal?.classList.contains('is-active')) {
+        closeSearch();
+      } else {
+        openSearch();
+      }
+    } else if (e.key === 'Escape' && modal?.classList.contains('is-active')) {
+      closeSearch();
+    }
+  });
+</script>

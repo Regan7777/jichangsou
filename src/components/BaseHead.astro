@@ -1,0 +1,152 @@
+---
+// Import the global.css file here so that it is included on all pages.
+import '../styles/global.css';
+import type { ImageMetadata } from 'astro';
+import FallbackImage from '../assets/blog-placeholder-1.jpg';
+import { SITE_TITLE } from '../consts';
+
+interface Props {
+	title: string;
+	description: string;
+	image?: ImageMetadata | string;
+	keywords?: string;
+}
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const { 
+	title, 
+	description, 
+	image = FallbackImage, 
+	keywords = '2026机场推荐, 科学上网, 翻墙梯子, 机场跑路名单, 跑路云前兆, IEPL专线区别, 免费机场蜜罐风险, Hysteria 2协议, 住宅原生IP, 4K流媒体解锁, ChatGPT解锁, Clash Verge Rev配置, 小火箭配置, v2rayN教程' 
+} = Astro.props;
+
+const imageURL = typeof image === 'string' 
+	? new URL(image, Astro.url) 
+	: (image && 'src' in image ? new URL(image.src, Astro.url) : new URL('/favicon.svg', Astro.url));
+---
+
+<!-- Global Metadata -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<link
+	rel="alternate"
+	type="application/rss+xml"
+	title={SITE_TITLE}
+	href={new URL('rss.xml', Astro.site)}
+/>
+<meta name="generator" content={Astro.generator} />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+<meta name="keywords" content={keywords} />
+<meta name="author" content="Jichangs.org 机场搜评测组" />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content={Astro.url} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={imageURL} />
+<meta property="og:site_name" content="机场搜 | Jichangs.org" />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={Astro.url} />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={imageURL} />
+
+<!-- Structured Data (JSON-LD) for Search Engines (Bing & Google) -->
+<script type="application/ld+json" is:inline set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "机场搜",
+  "alternateName": "Jichangs.org",
+  "url": "https://jichangs.org/",
+  "description": "2026机场推荐 | 科学上网评测。专注2026优质稳定高速机场推荐、服务商晚高峰深度实测与客户端指南。",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://jichangs.org/blog?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+})} />
+
+<!-- Theme Detection Script to prevent flashing -->
+<script is:inline>
+  const theme = (() => {
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+      return localStorage.getItem('theme');
+    }
+    if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+      return 'light';
+    }
+    return 'dark';
+  })();
+  
+  if (theme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+</script>
+
+<!-- Global Toast Notification & Clipboard helper -->
+<script is:inline>
+  window.showToast = function(msg) {
+    const existing = document.querySelector('.toast-msg');
+    if (existing) existing.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast-msg';
+    toast.innerHTML = `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="#38bdf8" stroke-width="2.5"><polyline points="3 8 7 12 13 4"></polyline></svg><span>${msg}</span>`;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(10px)';
+      setTimeout(() => toast.remove(), 300);
+    }, 2200);
+  };
+
+  window.copyText = function(text, successMsg = '已成功复制到剪贴板！') {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(() => {
+        window.showToast(successMsg);
+      }).catch(() => fallbackCopy(text, successMsg));
+    } else {
+      fallbackCopy(text, successMsg);
+    }
+  };
+
+  function fallbackCopy(text, successMsg) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      window.showToast(successMsg);
+    } catch (err) {
+      window.showToast('复制失败，请手动长按复制');
+    }
+    textArea.remove();
+  }
+</script>

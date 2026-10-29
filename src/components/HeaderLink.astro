@@ -1,0 +1,58 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'a'>;
+
+const { href, class: className, ...props } = Astro.props;
+const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
+const subpath = pathname.match(/[^\/]+/g);
+const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
+---
+
+<a href={href} class:list={['nav-item', className, { active: isActive }]} {...props}>
+	<slot />
+</a>
+
+<style>
+	.nav-item {
+		display: inline-flex;
+		align-items: center;
+		height: 100%;
+		padding: 0 0.95rem;
+		color: var(--text-secondary);
+		font-size: 0.92rem;
+		font-weight: 500;
+		text-decoration: none;
+		transition: color 0.15s ease, background-color 0.15s ease;
+		position: relative;
+		border: none;
+		background: transparent;
+	}
+
+	.nav-item:hover {
+		color: var(--text-primary);
+		background: rgba(255, 255, 255, 0.04);
+	}
+
+	:global([data-theme="light"]) .nav-item:hover {
+		color: var(--text-primary);
+		background: rgba(0, 0, 0, 0.04);
+	}
+
+	.nav-item.active {
+		color: var(--text-primary);
+		font-weight: 700;
+		background: transparent;
+		border: none;
+	}
+
+	.nav-item.active::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0.85rem;
+		right: 0.85rem;
+		height: 2px;
+		background: var(--text-primary);
+	}
+</style>

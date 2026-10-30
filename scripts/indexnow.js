@@ -1,14 +1,15 @@
 import fs from 'fs';
 
-const API_KEY = '7ec54bed5e684bee9e50ea059b0e5538';
+const API_KEY = '3ce47f206a70492fa2dacf38cf2396c2';
 const HOST = 'jichangs.org';
 const KEY_LOCATION = `https://${HOST}/${API_KEY}.txt`;
 
-// Parse sitemap-0.xml to extract all URLs
+// Parse sitemap-0.xml or sitemap.xml to extract all URLs
 function getUrls() {
-  const sitemapPath = 'dist/sitemap-0.xml';
-  if (!fs.existsSync(sitemapPath)) {
-    throw new Error('dist/sitemap-0.xml not found. Please run `npm run build` first.');
+  const candidates = ['dist/sitemap-0.xml', 'dist/sitemap.xml'];
+  const sitemapPath = candidates.find(p => fs.existsSync(p));
+  if (!sitemapPath) {
+    throw new Error('Sitemap not found in dist/. Please run `npm run build` first.');
   }
   const content = fs.readFileSync(sitemapPath, 'utf-8');
   const matches = [...content.matchAll(/<loc>(https:\/\/[^<]+)<\/loc>/g)];

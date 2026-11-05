@@ -1,8 +1,8 @@
 import fs from 'fs';
 
-const API_KEY = '3ce47f206a70492fa2dacf38cf2396c2';
+const PRIMARY_KEY = '7ec54bed5e684bee9e50ea059b0e5538';
+const ALT_KEY = '3ce47f206a70492fa2dacf38cf2396c2';
 const HOST = 'jichangs.org';
-const KEY_LOCATION = `https://${HOST}/${API_KEY}.txt`;
 
 // Parse sitemap-0.xml or sitemap.xml to extract all URLs
 function getUrls() {
@@ -20,13 +20,7 @@ async function submitIndexNow() {
   const urlList = getUrls();
   console.log(`[IndexNow] Found ${urlList.length} URLs to submit from sitemap.`);
 
-  const payload = {
-    host: HOST,
-    key: API_KEY,
-    keyLocation: KEY_LOCATION,
-    urlList: urlList
-  };
-
+  const keys = [PRIMARY_KEY, ALT_KEY];
   const endpoints = [
     'https://api.indexnow.org/indexnow',
     'https://www.bing.com/indexnow'
@@ -34,24 +28,32 @@ async function submitIndexNow() {
 
   for (const endpoint of endpoints) {
     console.log(`[IndexNow] Submitting to ${endpoint}...`);
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8'
-        },
-        body: JSON.stringify(payload)
-      });
+    for (const key of keys) {
+      const payload = {
+        host: HOST,
+        key: key,
+        keyLocation: `https://${HOST}/${key}.txt`,
+        urlList: urlList
+      };
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8'
+          },
+          body: JSON.stringify(payload)
+        });
 
-      console.log(`[IndexNow] ${endpoint} -> Response Status: ${response.status} ${response.statusText}`);
-      if (response.status === 200 || response.status === 202) {
-        console.log(`[IndexNow] Success! (${response.status === 200 ? 'OK - Validated' : 'Accepted - Processing'})`);
-      } else {
-        const text = await response.text();
-        console.log(`[IndexNow] Details: ${text}`);
+        if (response.status === 200 || response.status === 202) {
+          console.log(`[IndexNow] ${endpoint} -> Key ${key.slice(0, 8)}... Success! (${response.status} ${response.statusText})`);
+          break;
+        } else {
+          const text = await response.text();
+          console.log(`[IndexNow] Key ${key.slice(0, 8)}... failed (${response.status}): ${text}`);
+        }
+      } catch (err) {
+        console.error(`[IndexNow] Error submitting with key ${key}:`, err.message);
       }
-    } catch (err) {
-      console.error(`[IndexNow] Error submitting to ${endpoint}:`, err.message);
     }
   }
 }

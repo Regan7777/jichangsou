@@ -74,7 +74,7 @@ export const TOP_AIRPORTS: AirportItem[] = [
       '直接提供Clash等通用订阅链接，换客户端无需迁移成本',
       '提供99元78GB与199元160GB两款一次性不限时流量包'
     ],
-    affUrl: 'https://fugui0077.dalaoyunaff.com/#/?code=1o7gYhTL',
+    affUrl: 'https://fugui0077.dalaoyunaff.com/#/?code=Wpfk4XD5',
     reviewSlug: 'dalaoyun-review',
     category: '四端自研',
   },
@@ -146,7 +146,7 @@ export const TOP_AIRPORTS: AirportItem[] = [
       '提供Android、Windows、Mac客户端教程，iOS使用Nextin识别码 sd88',
       '新用户首购可输入公告7折码 sd88 体验入门'
     ],
-    affUrl: 'https://fugui0077.shandianshuaff.com/#/?code=I2yK9PfK',
+    affUrl: 'https://fugui0077.shandianshuaff.com/#/?code=KSByEAn9',
     reviewSlug: 'shandianshu-review',
     category: '轻量性价比',
   },

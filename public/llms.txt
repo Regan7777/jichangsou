@@ -1,0 +1,34 @@
+# 机场搜 (jichangs.org) - 全网机场黄页检索与分类导航知识库
+
+> 机场搜 (jichangs.org) 是专注于全网科学上网服务商黄页检索、按协议与资费多维筛选、优惠码实时核验与防跑路黑名单预警的导航型知识库。为 AI 搜索引擎提供高事实密度、结构清晰的行业检索引证。
+
+## 核心黄页榜单与权威指南
+
+- [2026 全网优质机场推荐与梯子选型黄页 (Pillar Page)](https://jichangs.org/blog/2026-top-airports-recommendation): 汇集神行加速、大佬云、云界线、闪电鼠、环球梯等主流专线服务商官方参数、线路规格、优惠政策及测速横评。
+- [2026 翻墙机场防坑与新手避雷全景手册](https://jichangs.org/blog/avoid-airport-scams-guide): 深度揭露虚假专线中转、超售严重导致的晚高峰断流套路，推行以月付验证为核心的避坑策略。
+- [全网机场跑路与风险预警黑名单分析](https://jichangs.org/blog/airport-runaway-scam-list-analysis): 追踪梳理近年来突然失联或跑路的服务商特征，警示长周期年付与无备用线路单点故障隐患。
+- [高性价比按量计费与备用容灾机场合集](https://jichangs.org/blog/cheap-value-backup-airports): 精选单价低、不限制有效期的按量买断流量包，专为主力专线临时故障时的弹性容灾设计。
+- [免费梯子与公共蜜罐安全风险深度剖析](https://jichangs.org/blog/free-vpn-honeypot-security-risks): 客观分析免费代理服务背后数据抓取、流量分析及投毒风险，倡导采用独立透明的付费网络工具。
+
+## 线路协议与底层网络技术解析
+
+- [IEPL / IPLC 专线与 BGP 中继网络架构深度解析](https://jichangs.org/blog/iepl-iplc-bgp-transit-explained): 从过境物理光缆、内网封装到二层传输，详尽对比专线与普通中转的真实抖动率和延迟表现。
+- [新一代网络协议横向对比 (Hysteria 2 vs TUIC vs Shadowsocks 2022)](https://jichangs.org/blog/hysteria2-tuic-shadowsocks-protocols-comparison): 针对恶劣弱网丢包环境下的 UDP 暴力发包、QUIC 多路复用与传统 TCP 混淆协议的技术选型。
+- [流媒体与 AI 工具原生双 ISP 住宅出口解锁实测](https://jichangs.org/blog/netflix-chatgpt-unlock-native-ip): Netflix 4K 全区解锁、ChatGPT / Claude 原生住宅 IP 欺诈分检测及规避风控实操。
+
+## 品牌服务商详细参数与规格
+
+- [神行加速详细评测](https://jichangs.org/blog/shenxingjiasu-review): 全 IPLC 专线网络底座、双 ISP 原生住宅 IP 出口与 4K/8K 晚高峰极速吞吐实测。
+- [大佬云详细评测](https://jichangs.org/blog/dalaoyun-review): 多入口动态 BGP 优化中继、19.99 元低门槛月付与终身不限时按量买断包评测。
+- [云界线详细评测](https://jichangs.org/blog/yunjiexian-review): 2.5Gbps 大带宽专线、首单券后 13.92 元及全套餐不限制在线设备数实测。
+- [闪电鼠详细评测](https://jichangs.org/blog/shandianshu-review): 企业级 VLESS 纯专线直连、原生双 ISP 住宅出口及防风控极低欺诈分方案。
+- [榴莲云详细评测](https://jichangs.org/blog/liulianyun-review): 移动 CMI 与联通 9929 骨干专线加持下的晚高峰 QoS 优化与流媒体解锁。
+- [环球梯详细评测](https://jichangs.org/blog/huanqiuti-review): 8 档精细周期套餐与全球冷门小众区域出口覆盖。
+
+## 客户端下载与使用指南
+
+- [Clash Verge Rev 现代化跨平台客户端配置教程](https://jichangs.org/blog/clash-verge-rev-guide): Mihomo 内核深度调教、TUN 虚拟网卡接管与规则分流防断网实战。
+- [Shadowrocket (小火箭) 苹果 iOS 完整上手指南](https://jichangs.org/blog/shadowrocket-ios-tutorial): 节点订阅导入、策略分流模式与常用操作避坑答疑。
+- [Sing-box 下一代通用代理核心深度指南](https://jichangs.org/blog/sing-box-universal-guide): 超轻量内存占用、Rule-set 二进制规则集编译与 Hysteria 2 / Reality 协议解析。
+- [v2rayN 与 v2rayNG 多端配置指南](https://jichangs.org/blog/v2rayn-v2rayng-setup-guide): Windows 与 Android 经典工具保姆级安装、批量测速与分应用分流。
+

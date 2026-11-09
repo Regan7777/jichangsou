@@ -5,19 +5,34 @@ const ALT_KEY = '3ce47f206a70492fa2dacf38cf2396c2';
 const HOST = 'jichangs.org';
 
 // Parse sitemap-0.xml or sitemap.xml to extract all URLs
-function getUrls() {
+async function getUrls() {
   const candidates = ['dist/sitemap-0.xml', 'dist/sitemap.xml'];
   const sitemapPath = candidates.find(p => fs.existsSync(p));
-  if (!sitemapPath) {
-    throw new Error('Sitemap not found in dist/. Please run `npm run build` first.');
+  if (sitemapPath) {
+    const content = fs.readFileSync(sitemapPath, 'utf-8');
+    const matches = [...content.matchAll(/<loc>(https:\/\/[^<]+)<\/loc>/g)];
+    if (matches.length > 0) return matches.map(m => m[1]);
   }
-  const content = fs.readFileSync(sitemapPath, 'utf-8');
-  const matches = [...content.matchAll(/<loc>(https:\/\/[^<]+)<\/loc>/g)];
-  return matches.map(m => m[1]);
+
+  // 线上 sitemap 兜底
+  try {
+    const res = await fetch(`https://${HOST}/sitemap-0.xml`, { signal: AbortSignal.timeout(10000) });
+    if (res.ok) {
+      const xml = await res.text();
+      const matches = [...xml.matchAll(/<loc>(https:\/\/[^<]+)<\/loc>/g)];
+      if (matches.length > 0) return matches.map(m => m[1]);
+    }
+  } catch {}
+
+  return [
+    `https://${HOST}/`,
+    `https://${HOST}/tools`,
+    `https://${HOST}/rankings`
+  ];
 }
 
 async function submitIndexNow() {
-  const urlList = getUrls();
+  const urlList = await getUrls();
   console.log(`[IndexNow] Found ${urlList.length} URLs to submit from sitemap.`);
 
   const keys = [PRIMARY_KEY, ALT_KEY];

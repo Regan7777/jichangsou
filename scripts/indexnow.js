@@ -37,6 +37,7 @@ async function submitIndexNow() {
 
   const keys = [PRIMARY_KEY, ALT_KEY];
   const endpoints = [
+    'https://yandex.com/indexnow',
     'https://api.indexnow.org/indexnow',
     'https://www.bing.com/indexnow'
   ];

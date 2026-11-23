@@ -218,7 +218,7 @@ export const TOP_AIRPORTS: AirportItem[] = [
       '提供三档终身不限时包（189元130GB、479元380GB、799元600GB）',
       '支持Windows/macOS/Android与iOS Nextin，不限同时在线设备'
     ],
-    affUrl: 'https://fugui.flyvaff.com/#/?code=gxmUajhy',
+    affUrl: 'https://cola.flyvaff.com/#/register/?code=gxmUajhy',
     reviewSlug: 'feiv-review',
     category: '不限时备用',
   },

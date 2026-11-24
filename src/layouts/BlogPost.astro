@@ -5,14 +5,14 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 import SearchModal from '../components/SearchModal.astro';
-import { SITE_NAME, TOP_AIRPORTS } from '../consts';
+import { SITE_NAME, ALL_AIRPORTS } from '../consts';
 
 type Props = CollectionEntry<'blog'>['data'];
 
 const { title, description, pubDate, updatedDate, category, tags = [], rating, speed, price, badge, author } = Astro.props;
 
 const currentSlug = Astro.url.pathname.replace(/^\/blog\//, '').replace(/\/$/, '');
-const matchedAirport = TOP_AIRPORTS.find(a => a.reviewSlug === currentSlug || a.id === currentSlug || tags.includes(a.name));
+const matchedAirport = ALL_AIRPORTS.find(a => a.reviewSlug === currentSlug || a.id === currentSlug || tags.includes(a.name));
 ---
 
 <!doctype html>

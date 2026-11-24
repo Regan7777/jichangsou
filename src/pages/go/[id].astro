@@ -1,8 +1,8 @@
 ---
-import { TOP_AIRPORTS } from '../../consts';
+import { ALL_AIRPORTS } from '../../consts';
 
 export function getStaticPaths() {
-	return TOP_AIRPORTS.map((airport) => ({
+	return ALL_AIRPORTS.map((airport) => ({
 		params: { id: airport.id },
 		props: { airport },
 	}));

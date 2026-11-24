@@ -29,7 +29,7 @@ export interface AirportItem {
   category: '主推首选' | '四端自研' | '不限时备用' | '轻量性价比';
 }
 
-export const TOP_AIRPORTS: AirportItem[] = [
+export const ALL_AIRPORTS: AirportItem[] = [
   {
     id: 'shenxingjiasu',
     name: '神行加速',
@@ -295,6 +295,11 @@ export const TOP_AIRPORTS: AirportItem[] = [
     category: '轻量性价比',
   },
 ];
+
+// 首页与天梯榜展示的推荐机场（排除边缘节点与快狸）
+export const TOP_AIRPORTS: AirportItem[] = ALL_AIRPORTS.filter(
+  (airport) => airport.id !== 'bianyuan' && airport.id !== 'kuaili'
+);
 
 // 常见客户端列表（包含主流全部客户端：小火箭、v2rayN/v2rayNG、Clash Verge Rev、Mihomo Party、Sing-box等）
 export interface ClientItem {

@@ -9,7 +9,7 @@ import { SITE_NAME, ALL_AIRPORTS } from '../consts';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, category, tags = [], rating, speed, price, badge, author } = Astro.props;
+const { title, description, pubDate, updatedDate, category, tags = [], rating, speed, price, badge, author, faq = [] } = Astro.props;
 
 const currentSlug = Astro.url.pathname.replace(/^\/blog\//, '').replace(/\/$/, '');
 const matchedAirport = ALL_AIRPORTS.find(a => a.reviewSlug === currentSlug || a.id === currentSlug || tags.includes(a.name));
@@ -70,6 +70,20 @@ const matchedAirport = ALL_AIRPORTS.find(a => a.reviewSlug === currentSlug || a.
 				}
 			]
 		})} />
+		{faq.length > 0 && (
+			<script type="application/ld+json" is:inline set:html={JSON.stringify({
+				"@context": "https://schema.org",
+				"@type": "FAQPage",
+				"mainEntity": faq.map((item) => ({
+					"@type": "Question",
+					"name": item.question,
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": item.answer
+					}
+				}))
+			})} />
+		)}
 	</head>
 
 	<body>

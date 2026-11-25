@@ -22,6 +22,10 @@ const blog = defineCollection({
 			badge: z.string().optional(),
 			featured: z.boolean().default(false),
 			author: z.string().default('极畅测试组'),
+			faq: z.array(z.object({
+				question: z.string(),
+				answer: z.string(),
+			})).optional(),
 		}),
 });
 
